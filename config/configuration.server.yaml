@@ -1,0 +1,54 @@
+programs:
+  vad:
+    silero:
+      command: |
+        script/speech_prob "share/silero_vad.onnx"
+      adapter: |
+        vad_adapter_raw.py --rate 16000 --width 2 --channels 1 --samples-per-chunk 512
+
+  asr:
+    faster-whisper:
+      command: |
+        script/wav2text "${data_dir}/tiny-int8" "{wav_file}"
+      adapter: |
+        asr_adapter_wav2text.py
+
+  handle:
+    home_assistant:
+      command: |
+        bin/converse.py --language "${language}" "${url}" "${token_file}"
+      adapter: |
+        handle_adapter_text.py
+      template_args:
+        url: ""
+        token_file: "${data_dir}/token"
+        language: ""
+
+  tts:
+    piper:
+      command: |
+        bin/piper --model "${model}" --output_file -
+      adapter: |
+        tts_adapter_text2wav.py
+      template_args:
+        model: "${data_dir}/pl-mls_6892-low.onnx"
+
+    mimic3:
+      command: |
+        .venv/bin/mimic3 --voices-dir "${data_dir}" --voice "${voice}" --stdout
+      adapter: |
+        tts_adapter_text2wav.py
+      template_args:
+        voice: "en_UK/apope_low"
+
+
+pipelines:
+  default:
+    vad:
+      name: silero
+    asr:
+      name: faster-whisper
+    handle:
+      name: home_assistant
+    tts:
+      name: mimic3
