@@ -1,0 +1,51 @@
+programs:
+  mic:
+    arecord:
+      command: |
+        arecord -q -r 16000 -c 1 -f S16_LE -t raw -D plughw:CARD=S8,DEV=0 -
+      adapter: |
+        mic_adapter_raw.py --samples-per-chunk 1024 --rate 16000 --width 2 --channels 1
+
+  wake:
+    porcupine1:
+      command: |
+        .venv/bin/python3 bin/porcupine_stream.py --model "${model}"
+      template_args:
+        model: "alexa_raspberry-pi.ppn"
+#        model: "hey google_raspberry-pi.ppn"
+
+  remote:
+    websocket:
+      command: |
+        script/run "${uri}"
+      template_args:
+        uri: "ws://192.168.0.2:13331/pipeline/asr-tts"
+
+  snd:
+    # apt-get install alsa-utils
+    aplay:
+      command: |
+        aplay -q -D "${device}" -r 22050 -f S16_LE -c 1 -t raw
+      adapter: |
+        snd_adapter_raw.py --rate 22050 --width 2 --channels 1
+      template_args:
+        device: "plughw:CARD=S8,DEV=0"
+
+    udp_raw:
+      command: |
+        bin/udp_raw.py --host "${host}" --port ${port}
+      template_args:
+        host: "127.0.0.1"
+        port: 5001
+
+
+satellites:
+  default:
+    mic:
+      name: arecord
+    wake:
+      name: porcupine1
+    remote:
+      name: websocket
+    snd:
+      name: aplay
