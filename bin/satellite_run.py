@@ -128,7 +128,15 @@ async def main() -> None:
                                 break
 
                             if AudioChunk.is_type(mic_event.type):
-                                await async_write_event(mic_event, remote_proc.stdin)
+                                try:
+                                    await async_write_event(mic_event, remote_proc.stdin)
+                                except Exception as e:
+                                    # Just print(e) is cleaner and more likely what you want,
+                                    # but if you insist on printing message specifically whenever possible...
+                                    if hasattr(e, 'message'):
+                                        print(e.message)
+                                    else:
+                                        print(e)
 
                             mic_task = asyncio.create_task(
                                 async_read_event(mic_proc.stdout)
