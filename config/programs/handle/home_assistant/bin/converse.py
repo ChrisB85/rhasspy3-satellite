@@ -26,11 +26,13 @@ def main():
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
 
     token = Path(args.token_file).read_text(encoding="utf-8").strip()
-    headers = {"Authorization": f"Bearer {token}"}
+    headers = {"Authorization": f"Bearer {token}", "User-Agent": "Mozilla/5.0"}
 
     data_dict = {"text": sys.stdin.read()}
     if args.language:
         data_dict["language"] = args.language
+
+    _LOGGER.info(args.url)
 
     data = json.dumps(data_dict, ensure_ascii=False).encode("utf-8")
     request = Request(args.url, data=data, headers=headers)
