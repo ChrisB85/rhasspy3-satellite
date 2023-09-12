@@ -40,4 +40,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     result = convert_wav_to_text(args.wavfile, args.credentials, args.language)
-    print(result)
+    print(result, flush=True)
