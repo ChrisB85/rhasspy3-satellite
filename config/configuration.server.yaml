@@ -7,9 +7,9 @@ programs:
         vad_adapter_raw.py --rate 16000 --width 2 --channels 1 --samples-per-chunk 512
 
   asr:
-    faster-whisper:
+    google-asr:
       command: |
-        script/wav2text "${data_dir}/tiny-int8" "{wav_file}"
+        script/run --credentials "${data_dir}/credentials.json" --language pl-PL "{wav_file}"
       adapter: |
         asr_adapter_wav2text.py
 
