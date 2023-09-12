@@ -9,7 +9,7 @@ programs:
   asr:
     google-asr:
       command: |
-        script/run --credentials "${data_dir}/credentials.json" --language pl-PL "{wav_file}"
+        script/wav2text --credentials "${data_dir}/credentials.json" --language pl-PL "{wav_file}"
       adapter: |
         asr_adapter_wav2text.py
 
