@@ -34,6 +34,10 @@ def main():
     if not dir.endswith("/"):
         dir += "/"
 
+    if not os.path.exists(dir):
+        _LOGGER.info("Creating cache dir " + dir)
+        os.makedirs(dir)
+
     filename = dir + sha1_string(text)
     mp3_file_name = filename + ".mp3"
     wav_file_name = filename + ".wav"
