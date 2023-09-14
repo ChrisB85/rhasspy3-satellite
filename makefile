@@ -10,3 +10,10 @@ server-install:
 
 server-start:
 	./script/http_server --debug
+
+satellite-install:
+	./script/run ./config/programs/wake/porcupine1/script/setup
+	./script/run ./config/programs/remote/websocket/script/setup
+
+satellite-start:
+	./script/run bin/satellite_run.py --debug --loop
