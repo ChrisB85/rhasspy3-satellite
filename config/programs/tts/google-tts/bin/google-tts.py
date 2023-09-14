@@ -43,12 +43,14 @@ def main():
     wav_file_name = filename + ".wav"
 
     if os.path.exists(wav_file_name):
-        _LOGGER.info("File exists in cache: " + wav_file_name)
+        _LOGGER.info("File exists in cache " + wav_file_name)
         play_file(wav_file_name)
         return
 
+    _LOGGER.info("Downloading audio file... " + mp3_file_name)
     tts = gTTS(text=text, lang='pl')
     tts.save(mp3_file_name)
+    _LOGGER.info("Converting audio file to WAV... " + wav_file_name)
     mp3_to_wav(mp3_file_name, wav_file_name)
     os.unlink(mp3_file_name)
     play_file(wav_file_name)
