@@ -9,7 +9,7 @@ programs:
   asr:
     google-asr:
       command: |
-        script/wav2text --credentials "${data_dir}/credentials.json" --language pl-PL "{wav_file}"
+        script/wav2text --credentials "${data_dir}/credentials.json" --language "pl-PL" "{wav_file}"
       adapter: |
         asr_adapter_wav2text.py
 
@@ -20,26 +20,16 @@ programs:
       adapter: |
         handle_adapter_text.py
       template_args:
-        url: ""
+        url: "https://{DOMAIN}/api/conversation/process"
         token_file: "${data_dir}/token"
-        language: ""
+        language: "pl"
 
   tts:
-    piper:
+    google-tts:
       command: |
-        bin/piper --model "${model}" --output_file -
+        script/run --dir "${data_dir}/cache" --language "pl"
       adapter: |
         tts_adapter_text2wav.py
-      template_args:
-        model: "${data_dir}/pl-mls_6892-low.onnx"
-
-    mimic3:
-      command: |
-        .venv/bin/mimic3 --voices-dir "${data_dir}" --voice "${voice}" --stdout
-      adapter: |
-        tts_adapter_text2wav.py
-      template_args:
-        voice: "en_UK/apope_low"
 
 
 pipelines:
@@ -47,8 +37,8 @@ pipelines:
     vad:
       name: silero
     asr:
-      name: faster-whisper
+      name: google-asr
     handle:
       name: home_assistant
     tts:
-      name: mimic3
+      name: google-tts
